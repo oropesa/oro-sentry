@@ -1,0 +1,34 @@
+{
+  "name": "oro-sentry",
+  "version": "1.0.0",
+  "description": "Class OSentry is a wrapper of @sentry/node that allow to use Sentry and send custom events.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "sentry",
+    "promise",
+    "async/await"
+  ],
+  "author": "Carlos Oropesa <carlos@oropensando.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oropesa/oro-sentry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oropesa/oro-sentry/issues"
+  },
+  "homepage": "https://github.com/oropesa/oro-sentry#readme",
+  "dependencies": {
+    "@sentry/integrations": "^7.2.0",
+    "@sentry/node": "^7.2.0",
+    "oro-functions": "^1.1.7"
+  },
+  "devDependencies": {
+    "jest": "^28.1.1",
+    "sentry-testkit": "^3.3.7",
+    "wait-for-expect": "^3.0.2"
+  }
+}
