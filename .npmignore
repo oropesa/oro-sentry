@@ -2,4 +2,5 @@
 .gitignore
 tests/*
 *.test.js
+jest.config.js
 tmp.js

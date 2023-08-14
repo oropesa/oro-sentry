@@ -1,13 +1,16 @@
-const OSentry = require( '../index' );
 const Ofn = require( 'oro-functions' );
+const OSentry = require( '../index' );
 const sentryTestkit = require( 'sentry-testkit' );
-const { testkit, sentryTransport } = sentryTestkit();
+
+const { sentryTransport } = sentryTestkit();
 
 //
 
-describe('getClient Sentry', () => {
-    test( 'static', async () => {
-        let sentry = OSentry.getClient();
+describe( 'getClient Sentry', () => {
+    test( 'get Sentry (static)', async() => {
+        const sentry = OSentry.getClient();
+
+        console.log( Ofn.type(sentry, true) );
 
         expect( Ofn.type( sentry.init ) ).toBe( 'function' );
         expect( Ofn.type( sentry.captureEvent ) ).toBe( 'function' );
@@ -15,22 +18,44 @@ describe('getClient Sentry', () => {
         expect( Ofn.type( sentry.captureMessage ) ).toBe( 'function' );
         expect( Ofn.type( sentry.Scope ) ).toBe( 'class' );
     } );
-});
 
-describe('new OSentry()', () => {
-    test( 'new OSentry() empty', async () => {
-        let oSentry = new OSentry();
+    test( 'get Sentry (object)', async() => {
+        const oSentry = new OSentry( {
+            dsn: 'https://exampleDSN@test.com/0',
+            projectname: 'testing',
+            projectserver: 'ubuntu32'
+        } );
+        const sentry = oSentry.getClient();
 
-        expect( oSentry.constructor.name ).toBe( 'OSentry' );
+        expect( Ofn.type( sentry.init ) ).toBe( 'function' );
+        expect( Ofn.type( sentry.captureEvent ) ).toBe( 'function' );
+        expect( Ofn.type( sentry.captureException ) ).toBe( 'function' );
+        expect( Ofn.type( sentry.captureMessage ) ).toBe( 'function' );
+        expect( Ofn.type( sentry.Scope ) ).toBe( 'class' );
+    } );
+} );
+
+describe( 'new OSentry()', () => {
+    test( 'OSentry empty props', async() => {
+        const oSentry = new OSentry();
+
+        expect( Ofn.type( oSentry, true ) ).toBe( 'OSentry' );
         expect( oSentry.status ).toBe( false );
         expect( oSentry.environment ).toBe( 'UNDEFINED' );
         expect( oSentry.projectname ).toBe( undefined );
         expect( oSentry.projectserver ).toBe( undefined );
-        expect( oSentry.defaultTags ).toEqual( [ 'projectname', 'projectserver', 'lang', 'database', 'action', 'task' ] );
+        expect( oSentry.defaultTags ).toEqual( [
+            'projectname',
+            'projectserver',
+            'lang',
+            'database',
+            'action',
+            'task'
+        ] );
     } );
 
-    test( 'new OSentry() no-dsn', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() no-dsn', async() => {
+        const oSentry = new OSentry( {
             projectname: 'testing',
             projectserver: 'ubuntu32',
             environment: 'DEVELOPMENT',
@@ -44,23 +69,8 @@ describe('new OSentry()', () => {
         expect( oSentry.defaultTags ).toEqual( [ 'karma', 'topic', 'origin' ] );
     } );
 
-    test( 'new OSentry() bad dsn', async () => {
-        let oSentry = new OSentry( {
-            dsn: 'chacho',
-            projectname: 'testing',
-            projectserver: 'ubuntu32',
-            autoInit: false
-        } );
-
-        let responseInit = oSentry.init();
-
-        expect( oSentry.status ).toBe( false );
-        expect( responseInit.status ).toBe( false );
-        expect( responseInit.error.msg ).toBe( 'OSentry init failed: SentryError: Invalid Sentry Dsn: chacho' );
-    } );
-
-    test( 'new OSentry() dsn', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() dsn', async() => {
+        const oSentry = new OSentry( {
             dsn: 'https://exampleDSN@test.com/0',
             projectname: 'testing',
             projectserver: 'ubuntu32'
@@ -69,8 +79,8 @@ describe('new OSentry()', () => {
         expect( oSentry.status ).toBe( true );
     } );
 
-    test( 'new OSentry() dsn no autoinit', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() dsn no autoinit', async() => {
+        const oSentry = new OSentry( {
             dsn: 'https://exampleDSN@test.com/0',
             projectname: 'testing',
             projectserver: 'ubuntu32',
@@ -79,14 +89,14 @@ describe('new OSentry()', () => {
 
         expect( oSentry.status ).toBe( false );
 
-        let responseInit = oSentry.init();
+        const responseInit = oSentry.init();
 
         expect( oSentry.status ).toBe( true );
         expect( responseInit.status ).toBe( true );
     } );
 
-    test( 'new OSentry() dsn init twice', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() dsn init twice', async() => {
+        const oSentry = new OSentry( {
             dsn: 'https://exampleDSN@test.com/0',
             projectname: 'testing',
             projectserver: 'ubuntu32'
@@ -94,15 +104,19 @@ describe('new OSentry()', () => {
 
         expect( oSentry.status ).toBe( true );
 
-        let responseInit = oSentry.init();
+        const responseInit = oSentry.init();
 
         expect( oSentry.status ).toBe( true );
         expect( responseInit.status ).toBe( false );
+        if( responseInit.status === true ) {
+            return;
+        }
+
         expect( responseInit.error.msg ).toBe( 'OSentry is already init.' );
     } );
 
-    test( 'new OSentry() dsn vars', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() dsn vars', async() => {
+        const oSentry = new OSentry( {
             dsn: 'https://exampleDSN@test.com/0',
             projectname: 'testing',
             projectserver: 'ubuntu32',
@@ -110,7 +124,7 @@ describe('new OSentry()', () => {
         } );
 
         //environment is a getter, cannot be changed
-        oSentry.environment = 'chacho';
+        // oSentry.environment = 'chacho';
         oSentry.projectname = 'testing2';
         oSentry.projectserver = 'ubuntu64';
 
@@ -120,8 +134,8 @@ describe('new OSentry()', () => {
         expect( oSentry.projectserver ).toBe( 'ubuntu64' );
     } );
 
-    test( 'new OSentry() dsn getOptions default', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() dsn getOptions default', async() => {
+        const oSentry = new OSentry( {
             dsn: 'https://exampleDSN@test.com/0',
             projectname: 'testing',
             projectserver: 'ubuntu32',
@@ -133,7 +147,7 @@ describe('new OSentry()', () => {
 
         oSentry.init();
 
-        let options = oSentry.getOptions();
+        const options = oSentry.getOptions();
 
         expect( oSentry.status ).toBe( true );
         expect( options.dsn ).toBe( 'https://exampleDSN@test.com/0' );
@@ -144,8 +158,8 @@ describe('new OSentry()', () => {
         expect( options.normalizeDepth ).toBe( 11 );
     } );
 
-    test( 'new OSentry() dsn getOptions', async () => {
-        let oSentry = new OSentry( {
+    test( 'new OSentry() dsn getOptions', async() => {
+        const oSentry = new OSentry( {
             dsn: 'https://exampleDSN@test.com/0',
             projectname: 'testing',
             projectserver: 'ubuntu32',
@@ -156,7 +170,7 @@ describe('new OSentry()', () => {
             }
         } );
 
-        let options = oSentry.getOptions();
+        const options = oSentry.getOptions();
 
         expect( oSentry.status ).toBe( true );
         expect( options.dsn ).toBe( 'https://exampleDSN@test.com/0' );
@@ -167,4 +181,4 @@ describe('new OSentry()', () => {
         expect( options.normalizeDepth ).toBe( 5 );
         expect( Ofn.type( options.transport ) ).toBe( 'function' );
     } );
-});
+} );

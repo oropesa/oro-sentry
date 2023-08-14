@@ -1,3 +1,16 @@
+## 1.1.0 / 2023-08-14
+* Added `TS` support.
+* Added _ts tests_.
+* Added `package-lock.json`.
+* Improved _tests_.
+* Improved _readme_.
+* Added `LOG` in `static LEVEL`.
+* Updated lib `oro-functions` to `v1.3.2`.
+* Updated lib `@sentry/integrations` to `v7.63.0`.
+* Updated lib `@sentry/node` to `v7.63.0`.
+* Updated lib-dev `jest` to `v29.6.0`.
+* Updated lib-dev `sentry-testkit` to `v5.0.5`.
+
 ## 1.0.0 / 2022-06-22
 * Added `MIT License`.
 * Added _unit testing_ `Jest`.
