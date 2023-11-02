@@ -1,3 +1,31 @@
+## 2.0.0 / 2023-11-02
+**NOTE:**<br>
+⚠️ It's not valid anymore:<br>`const OSentry = require('oro-sentry')`,<br>
+✔️ use the following instead:<br>`const { OSentry } = require('oro-sentry')`
+
+* Refactored `./index.js` to `./src/index.ts`.
+* Updated _package_ as `type: "module"`.
+* Added `tsup` and now _package_ is compiled to `cjs` _(common)_ and `mjs` _(module)_.
+* Added _github actions_:
+    * `validate_pr_to_master`
+    * `npm_publish_on_pr_merge_to_master`.
+* Added `husky` (to ensure only valid commits).
+* Added `eslint` (and applied it).
+* Added `prettier` (and applied it).
+* Updated _package description_
+* Updated libs:
+    * `@sentry/integrations` to `v7.77.0`.
+    * `@sentry/node` to `v7.77.0`.
+    * `oro-functions` to `v2.0.0`.
+* Updated _dev_ libs:
+    * `@babel/core` to `v7.23.2`.
+    * `@babel/preset-env` to `v7.23.2`.
+    * `@babel/preset-typescript` to `v7.23.2`.
+    * `@types/jest` to `v29.5.7`.
+    * `babel-jest` to `v29.7.0`.
+    * `jest` to `v29.7.0`.
+    * `sentry-testkit` to `v5.0.6`.
+
 ## 1.1.0 / 2023-08-14
 * Added `TS` support.
 * Added _ts tests_.
