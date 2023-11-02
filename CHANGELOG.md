@@ -1,3 +1,6 @@
+## 2.0.1 / 2023-11-02
+* Fixed _CodeQL_: Incomplete string escaping or encoding `.replace(/\n/, ' ')`.
+
 ## 2.0.0 / 2023-11-02
 **NOTE:**<br>
 ⚠️ It's not valid anymore:<br>`const OSentry = require('oro-sentry')`,<br>
