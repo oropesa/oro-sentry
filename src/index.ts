@@ -176,7 +176,7 @@ export class OSentry {
     try {
       Sentry.init(this.#sentryOptions);
     } catch (error: any) {
-      const msg = error.toString().split('\r\n')[0].replace(/\n/, ' ');
+      const msg = error.toString().split('\r\n')[0].replace(/\n/g, ' ');
       return Ofn.setResponseKO(`OSentry init failed: ${msg}`, { sentry: error });
     }
 
