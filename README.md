@@ -1,14 +1,22 @@
 # Oro Sentry
 
-OSentry Class is a wrapper of [@sentry/node](https://www.npmjs.com/package/@sentry/node) 
-that allow to use Sentry and send _custom_ events.
+- [Overview](#overview)
+- [Installation](#installation)
+- [Example](#example)
+- [Methods](#methods)
 
+## Overview
+
+**OSentry** class is a wrapper for [@sentry/node](https://www.npmjs.com/package/@sentry/node)
+that allows you to use Sentry and send _custom_ events.
+
+## Installation
 
 ```shell
 npm install oro-sentry
 ```
 
-Example:
+## Example:
 
 ```js
 // cjs
@@ -17,17 +25,19 @@ const { OSentry } = require( 'oro-sentry' );
 // mjs, ts
 import OSentry from 'oro-sentry';
 
-const oSentry = new OSentry( {
-  projectname: 'testing', 
-  projectserver: 'ubuntu32', 
-  environment: 'DEVELOPMENT', 
+const osentry = new OSentry( {
+  projectname: 'testing',
+  projectserver: 'ubuntu32',
+  environment: 'DEVELOPMENT',
   sentryDsn: 'https://...'
   //or dsn: 'https://...'
 });
 
-const response = oSentry.sendResponse( { status: false, error: { msg: 'example', trackError: 777 } } );
+// EXAMPLE 1
+
+const response = osentry.sendResponse( { status: false, error: { msg: 'example', trackError: 777 } } );
 // or
-const response = oSentry.sendResponse( Ofn.setResponseKO( 'example', { trackError: 777 } ) );
+const response = osentry.sendResponse( Ofn.setResponseKO( 'example', { trackError: 777 } ) );
 
 console.log( response );
 //  {
@@ -43,9 +53,11 @@ console.log( response );
 //    }
 //  }
 
-const response = oSentry.sendResponse( { status: true, msg: 'example 2', level: 'debug' } );
+// EXAMPLE 2
+
+const response = osentry.sendResponse( { status: true, msg: 'example 2', level: 'debug' } );
 // or
-const response = oSentry.sendResponse( Ofn.setResponseOK( 'example 2', { level: OSentry.LEVEL.DEBUG } ) );
+const response = osentry.sendResponse( Ofn.setResponseOK( 'example 2', { level: OSentry.LEVEL.DEBUG } ) );
 
 console.log( response );
 //  {
@@ -63,15 +75,18 @@ console.log( response );
 
 ## Methods
 
-* [new OSentry()](#new-osentry)
-* [[static] .getClient()](#static-getclient)
-* [.init()](#init)
-* [.getOptions()](#getoptions)
-* [.sendResponse()](#sendresponse)
-* [.captureMessage()](#capturemessage)
-* [Other properties](#other-properties)
+- [new OSentry()](#new-osentry)
+- [[static] .getClient()](#static-getclient)
+- [.init()](#init)
+- [.getOptions()](#getoptions)
+- [.sendResponse()](#sendresponse)
+- [.captureMessage()](#capturemessage)
+- [Other properties](#other-properties)
+
+<hr>
 
 ### new OSentry()
+
 ```ts
 new OSentry( config?: OSentryConfig );
 
@@ -98,28 +113,36 @@ When create `new OSentry` it can be passed all config and it inits automatically
 
 By default, `options` is prepared to show in _extra objects_ a `normalizeDepth` to `10`.
 
-On the other hand, `defaulTags` is a _keys array_, so when `OSentry.sendResponse( responseObject )`, 
+On the other hand, `defaulTags` is a _keys array_, so when `OSentry.sendResponse( responseObject )`,
 these keys are moved from 'extra' to 'tags'.
 
 Note: `environment` tag can be only declared here.
 
+<hr>
+
 ### [static] .getClient()
+
 ```ts
 OSentry.getClient(): SentryClient
 ```
 
-If yu want to use the _lib_ `Sentry`, you can get it easily. 
+If yu want to use the _lib_ `Sentry`, you can get it easily.
 
 Note: You can get it from the class (static) or the object (method).
 
 ```ts
 const sentry = OSentry.getClient();
+
 //or
-const oSentry = new OSentry( config );
-const sentry = oSentry.getClient();
+
+const osentry = new OSentry( config );
+const sentry = osentry.getClient();
 ```
 
+<hr>
+
 ### .init()
+
 ```ts
 init( options?: OSentryConfigOptions ): OSentryInitResponse;
 
@@ -153,16 +176,19 @@ interface OSentryInitError {
 You can avoid to init `OSentry` by default to init later (with _custom_ `options`).
 
 ```js
-const oSentry = new OSentry( { ...config, autoInit: false } );
+const osentry = new OSentry({ ...config, autoInit: false });
 
-const responseInit = oSentry.init( options );
-console.log( responseInit );
+const responseInit = osentry.init(options);
+console.log(responseInit);
 // -> { status: true }
 ```
 
+<hr>
+
 ### .getOptions()
+
 ```ts
-oSentry.getOptions(): OSentryConfigOptions;
+osentry.getOptions(): OSentryConfigOptions;
 
 interface OSentryConfigOptions extends NodeOptions {
   // { NodeOptions } from '@sentry/node/types'
@@ -173,28 +199,30 @@ interface OSentryConfigOptions extends NodeOptions {
 Once `OSentry` is initiated, you can check `options` _object_.
 
 ```js
-const oSentry = new OSentry( config );
+const osentry = new OSentry(config);
 
-const options = oSentry.getOptions();
-console.log( options );
+const options = osentry.getOptions();
+console.log(options);
 // -> {
 //   dsn: 'https://...',
 //   tracesSampleRate: 0.5,
 //   environment: 'DEVELOPMENT',
-//   integrations: [ ExtraErrorData { name: 'ExtraErrorData', _options: { ... } } ],
+//   integrations: [ ExtraErrorData { name: 'ExtraErrorData', ... } ],
 //   normalizeDepth: 11,
 //   defaultIntegrations: [ ... ],
 //   autoSessionTracking: false,
 //   instrumenter: 'sentry'
 // }
-
 ```
 
+<hr>
+
 ### .sendResponse()
+
 ```ts
-sendResponse<T extends Record<string, any>>( 
+sendResponse<T extends Record<string, any>>(
   response?: OSentryResponse<T>,
-  inConsole?: boolean 
+  inConsole?: boolean
 ): OSentrySendResponse;
 
 type OSentryResponse<T extends Record<string, any>> =
@@ -212,7 +240,7 @@ interface OSentryResponseDefaultParams {
 }
 
 type OSentrySendResponse =
-  | SResponseOKObject<OSentrySendObject> 
+  | SResponseOKObject<OSentrySendObject>
   | SResponseKOSimple
 
 interface SResponseOKObject {
@@ -258,7 +286,7 @@ const response = {
   user: { id: '', username: '', email: '', ... },
   // tags are ket-value extracted from 'extra' to use as 'Sentry Tags'
   tags: { key: 'value', ... },
-  
+
   // Pay attention of defaultTags, because that keys are going to be extracted from 'extra' to 'tags'.
   // By default, 'defaultTags' are:
   lang: '',
@@ -267,8 +295,8 @@ const response = {
   task: '',
   projectname   : '', // if not declared, take it from 'OSentry config'
   projectserver : '', // if not declared, take it from 'OSentry config'
-  
-  // more not-main keys are saved as 'extra' 
+
+  // more not-main keys are saved as 'extra'
   myCustomKey: 'myCustomValue',
   myCustomKeyObj: { ... }, // default depth: 10
 }
@@ -279,26 +307,26 @@ This method allows you to send a managed error to _Sentry_
 ```js
 try {
   // Something that breaks
-} 
-catch( err ) {
-  const msg = err.toString().split( '\r\n' )[ 0 ].replace( '\n', ' ' );
-  oSentry.sendResponse( 
-    Ofn.setResponseKO( `Custom Error: ${msg}`, { tracking: dataForTracking } ) 
-  );
+} catch (err) {
+  const msg = err.toString().split('\r\n')[0].replace('\n', ' ');
+  osentry.sendResponse(Ofn.setResponseKO(`Custom Error: ${msg}`, { tracking: dataForTracking }));
 }
 ```
 
 Finally, if you want to do both: send an error to Sentry and _console.log_ it, set as `true` the second param.
 
 ```js
-oSentry.sendResponse( response, true );
+osentry.sendResponse(response, true);
 ```
 
+<hr>
+
 ### .captureMessage()
+
 ```ts
-captureMessage( 
-  message: string, 
-  captureContext?: Partial<ScopeContext> 
+captureMessage(
+  message: string,
+  captureContext?: Partial<ScopeContext>
 ): OSentrySendResponse;
 
 // { ScopeContext } from '@sentry/types';
@@ -332,30 +360,32 @@ interface OSentrySendObject {
 }
 ```
 
-The method `sendResponse` prepares everything to send the _Sentry ScopeContext_ and 
-use the method `captureMessage` correctly. 
+The method `sendResponse` prepares everything to send the _Sentry ScopeContext_ and
+use the method `captureMessage` correctly.
 
 So this method is public to be allowed to be used if another _custom ScopeContext_ is required.
 
+<hr>
+
 ### Other properties
 
-When object `oSentry` is created, there are other public properties to be accessed.
+When object `osentry` is created, there are other public properties to be accessed.
 
 ```ts
-oSentry.defaultTags: string[];
-oSentry.projectname?: string;
-oSentry.projectserver?: string;
+osentry.defaultTags: string[];
+osentry.projectname?: string;
+osentry.projectserver?: string;
 
-readonly oSentry.status: boolean;  // to ensure oSentry is initiated
-readonly oSentry.environment: string;
+readonly osentry.status: boolean;  // to ensure osentry is initiated
+readonly osentry.environment: string;
 ```
 
 On the other hand, there is a static property called `LEVEL` to set level correctly.
 
 ```ts
-OSentry.LEVEL: OSentryLevelObject;
+OSentry.LEVEL: OSentryLevels;
 
-interface OSentryLevelObject {
+interface OSentryLevels {
   LOG: 'log';
   INFO: 'info';
   DEBUG: 'debug';

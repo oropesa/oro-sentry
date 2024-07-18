@@ -1,7 +1,10 @@
-const { OSentry } = require('../dist');
-const { Ofn } = require('oro-functions');
-const sentryTestkit = require('sentry-testkit');
-const waitForExpect = require('wait-for-expect');
+import type { ErrorEvent } from '@sentry/types';
+import Ofn from 'oro-functions-client';
+import sentryTestkit from 'sentry-testkit';
+import waitForExpect from 'wait-for-expect';
+
+import { OSentry } from '../OSentry';
+import { OSENTRY_DEFAULT_CONFIG } from './_consts.mocks';
 
 const { sentryTransport } = sentryTestkit();
 
@@ -9,24 +12,19 @@ const { sentryTransport } = sentryTestkit();
 
 describe('sendResponse', () => {
   test('sendResponse no init', async () => {
-    const oSentry = new OSentry({
-      dsn: 'https://exampleDSN@test.com/0',
-      projectname: 'testing',
-      projectserver: 'ubuntu32',
-      environment: 'DEVELOPMENT',
+    const osentry = new OSentry({
+      ...OSENTRY_DEFAULT_CONFIG,
       autoInit: false,
       options: {
         transport: sentryTransport,
-        beforeSend: (event, _hint) => {
-          return event;
-        },
+        beforeSend: (event, _hint) => event,
       },
     });
 
-    const response = oSentry.sendResponse(Ofn.setResponseKO(''));
+    const response = osentry.sendResponse(Ofn.setResponseKO(''), true);
 
     expect(response.status).toBe(false);
-    if (response.status === true) {
+    if (response.status) {
       return;
     }
 
@@ -34,33 +32,30 @@ describe('sendResponse', () => {
   });
 
   test('sendResponse empty', async () => {
-    const events = [];
+    const events: ErrorEvent[] = [];
 
-    const oSentry = new OSentry({
-      dsn: 'https://exampleDSN@test.com/0',
-      projectname: 'testing',
-      projectserver: 'ubuntu32',
-      environment: 'DEVELOPMENT',
+    const osentry = new OSentry({
+      ...OSENTRY_DEFAULT_CONFIG,
       options: {
         transport: sentryTransport,
         beforeSend: (event, _hint) => {
-          events.push(event);
+          events.push(event as ErrorEvent);
           return event;
         },
       },
     });
 
-    const response = oSentry.sendResponse();
+    const response = osentry.sendResponse(Ofn.setResponseKO(''));
 
     expect(response.status).toBe(true);
-    if (response.status === false) {
+    if (!response.status) {
       return;
     }
 
     expect(response.event.message).toBe('OSentry: response without msg');
     expect(response.event.captureContext).toEqual({
       level: 'error',
-      tags: { projectname: 'testing', projectserver: 'ubuntu32' },
+      tags: { projectname: 'testing', projectserver: 'ubuntuDEV32' },
     });
 
     await waitForExpect(() => {
@@ -77,33 +72,30 @@ describe('sendResponse', () => {
   });
 
   test('sendResponse simple ok', async () => {
-    const events = [];
+    const events: ErrorEvent[] = [];
 
-    const oSentry = new OSentry({
-      dsn: 'https://exampleDSN@test.com/0',
-      projectname: 'testing',
-      projectserver: 'ubuntu32',
-      environment: 'DEVELOPMENT',
+    const osentry = new OSentry({
+      ...OSENTRY_DEFAULT_CONFIG,
       options: {
         transport: sentryTransport,
         beforeSend: (event, _hint) => {
-          events.push(event);
+          events.push(event as ErrorEvent);
           return event;
         },
       },
     });
 
-    const response = oSentry.sendResponse(Ofn.setResponseOK('Chacho'));
+    const response = osentry.sendResponse(Ofn.setResponseOK('Chacho'));
 
     expect(response.status).toBe(true);
-    if (response.status === false) {
+    if (!response.status) {
       return;
     }
 
     expect(response.event.message).toBe('Chacho');
     expect(response.event.captureContext).toEqual({
       level: 'info',
-      tags: { projectname: 'testing', projectserver: 'ubuntu32' },
+      tags: { projectname: 'testing', projectserver: 'ubuntuDEV32' },
     });
 
     await waitForExpect(() => {
@@ -120,35 +112,30 @@ describe('sendResponse', () => {
   });
 
   test('sendResponse simple ko', async () => {
-    const events = [];
+    const events: ErrorEvent[] = [];
 
-    const oSentry = new OSentry({
-      dsn: 'https://exampleDSN@test.com/0',
-      projectname: 'testing',
-      projectserver: 'ubuntu32',
-      environment: 'DEVELOPMENT',
+    const osentry = new OSentry({
+      ...OSENTRY_DEFAULT_CONFIG,
       options: {
         transport: sentryTransport,
         beforeSend: (event, _hint) => {
-          events.push(event);
+          events.push(event as ErrorEvent);
           return event;
         },
       },
     });
 
-    const response = oSentry.sendResponse(
-      Ofn.setResponseKO('Chacho KO', { level: OSentry.LEVEL.FATAL }),
-    );
+    const response = osentry.sendResponse(Ofn.setResponseKO('Chacho KO', { level: OSentry.LEVEL.FATAL }));
 
     expect(response.status).toBe(true);
-    if (response.status === false) {
+    if (!response.status) {
       return;
     }
 
     expect(response.event.message).toBe('Chacho KO');
     expect(response.event.captureContext).toEqual({
       level: OSentry.LEVEL.FATAL,
-      tags: { projectname: 'testing', projectserver: 'ubuntu32' },
+      tags: { projectname: 'testing', projectserver: 'ubuntuDEV32' },
     });
 
     await waitForExpect(() => {
@@ -165,23 +152,25 @@ describe('sendResponse', () => {
   });
 
   test('sendResponse details', async () => {
-    const events = [];
+    const events: ErrorEvent[] = [];
 
-    const oSentry = new OSentry({
-      dsn: 'https://exampleDSN@test.com/0',
-      projectname: 'testing',
-      projectserver: 'ubuntu32',
+    const osentry = new OSentry({
+      ...OSENTRY_DEFAULT_CONFIG,
       environment: 'PRE_PRODUCTION',
       options: {
         transport: sentryTransport,
         beforeSend: (event, _hint) => {
-          events.push(event);
+          events.push(event as ErrorEvent);
           return event;
         },
       },
     });
 
-    const response = oSentry.sendResponse(
+    // NOTE: this should have a typescript error
+    // osentry.sendResponse<{ foo: number }>(Ofn.setResponseOK('Chacho', { level: OSentry.LEVEL.DEBUG, foo: 'bar' }));
+    // osentry.sendResponse(Ofn.setResponseKO<{ foo: number }>('Chacho', { foo: 'bar' }));
+
+    const response = osentry.sendResponse<{ foo: string }>(
       Ofn.setResponseKO('Chacho', {
         level: OSentry.LEVEL.DEBUG,
         tags: { loco: 'tio' },
@@ -191,14 +180,14 @@ describe('sendResponse', () => {
     );
 
     expect(response.status).toBe(true);
-    if (response.status === false) {
+    if (!response.status) {
       return;
     }
 
     expect(response.event.message).toBe('Chacho');
     expect(response.event.captureContext).toEqual({
       level: 'debug',
-      tags: { projectname: 'testing', projectserver: 'ubuntu32', loco: 'tio' },
+      tags: { projectname: 'testing', projectserver: 'ubuntuDEV32', loco: 'tio' },
       user: { id: '7', username: 'oro', email: 'carlos@oropensando.com' },
       extra: {
         foo: 'bar',
