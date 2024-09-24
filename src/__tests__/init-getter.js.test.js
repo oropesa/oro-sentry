@@ -1,16 +1,19 @@
-const { Integration } = require('@sentry/types');
 const { type } = require('oro-functions-client');
-const sentryTestkit = require('sentry-testkit');
 
 const { OSentry } = require('../OSentry');
-const { OSENTRY_DEFAULT_CONFIG } = require('./_consts.mocks');
+const { defaultConsoleError, mockConsoleError } = require('./_consts.mocks');
 
 //
 
-const { sentryTransport } = sentryTestkit();
-
 describe('new OSentry()', () => {
+  afterEach(() => {
+    console.error = defaultConsoleError;
+    mockConsoleError.mockReset();
+  });
+
   test('OSentry wrong init options-type', async () => {
+    console.error = mockConsoleError;
+
     const osentry = new OSentry();
 
     osentry.init([]);
@@ -21,5 +24,7 @@ describe('new OSentry()', () => {
     expect(osentry.projectname).toBe(undefined);
     expect(osentry.projectserver).toBe(undefined);
     expect(osentry.defaultTags).toEqual(['projectname', 'projectserver', 'lang', 'database', 'action', 'task']);
+
+    expect(mockConsoleError).toHaveBeenCalledWith('OSentry: Sentry need DSN.');
   });
 });

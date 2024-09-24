@@ -1,3 +1,25 @@
+## 2.1.1 / 2024-09-24
+- Apply `prettier --write` in the whole project (with `endOfLine: 'lf'`).
+- Update `eslint` _breakpoint version_ (v8 to v9).
+- Update typescript _target_ to `ES2020`.
+- Updated libs:
+  - `@sentry/node` from `v8.18.0` to `v8.31.0`.
+  - `oro-functions-client` from `v2.3.1` to `v2.3.2`.
+- Updated _dev_ libs:
+  - `@babel/core` from `v7.24.9` to `v7.25.2`.
+  - `@babel/preset-env` from `v7.24.8` to `v7.25.4`.
+  - `@eslint/js` from `v9.7.0` to `v9.11.1`.
+  - `@types/jest` from `v29.5.12` to `v29.5.13`.
+  - `eslint` from `v8.57.0` to `v9.11.1`.
+  - `eslint-plugin-jest` from `v28.6.0` to `v28.8.3`.
+  - `eslint-plugin-unicorn` from `v54.0.0` to `v55.0.0`.
+  - `globals` from `v15.8.0` to `v15.9.0`.
+  - `husky` from `v9.0.11` to `v9.1.6`.
+  - `nodemon` from `v3.1.4` to `v3.1.7`.
+  - `tsup` from `v8.1.0` to `v8.3.0`.
+  - `typescript` from `v5.5.3` to `v5.5.4`.
+  - `typescript-eslint` from `v7.16.1` to `v8.7.0`.
+
 ## 2.1.0 / 2024-07-18
 
 - Re-init `package-lock.json`.

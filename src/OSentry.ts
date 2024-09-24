@@ -55,7 +55,9 @@ export class OSentry {
     this.#status = false;
 
     this.#dsn = sentryDsn || dsn;
-    !Ofn.isString(this.#dsn) && (this.#dsn = undefined);
+    if (!Ofn.isString(this.#dsn)) {
+      this.#dsn = undefined;
+    }
 
     this.projectname = projectname;
     this.projectserver = projectserver;
@@ -96,11 +98,19 @@ export class OSentry {
       ...(Ofn.isObject(options) ? options : {}),
     });
 
-    !this.#dsn && Ofn.isString(defaultOptions.dsn) && (this.#dsn = defaultOptions.dsn);
-    defaultOptions.dsn && delete defaultOptions.dsn;
+    if (!this.#dsn && Ofn.isString(defaultOptions.dsn)) {
+      this.#dsn = defaultOptions.dsn;
+    }
+    if (defaultOptions.dsn) {
+      delete defaultOptions.dsn;
+    }
 
-    Ofn.isString(defaultOptions.environment) && (this.#environment = defaultOptions.environment);
-    defaultOptions.environment && delete defaultOptions.environment;
+    if (Ofn.isString(defaultOptions.environment)) {
+      this.#environment = defaultOptions.environment;
+    }
+    if (defaultOptions.environment) {
+      delete defaultOptions.environment;
+    }
 
     if (!this.#dsn) {
       console.error('OSentry: Sentry need DSN.');
@@ -139,7 +149,9 @@ export class OSentry {
     response: OSentryResponse<T>,
     inConsole = false,
   ): OSentrySendResponse {
-    inConsole && console.log(response);
+    if (inConsole) {
+      console.log(response);
+    }
 
     if (!this.#status) {
       console.error('OSentry: not init (sendResponse).');
@@ -188,8 +200,12 @@ export class OSentry {
       delete extra[tagKey];
     }
 
-    Ofn.objIsEmpty(user) && (user = undefined);
-    Ofn.objIsEmpty(extra) && (extra = undefined);
+    if (Ofn.objIsEmpty(user)) {
+      user = undefined;
+    }
+    if (Ofn.objIsEmpty(extra)) {
+      extra = undefined;
+    }
 
     //
 
@@ -202,7 +218,10 @@ export class OSentry {
     inConsole = false,
   ): OSentrySendResponse {
     if (!this.#status) {
-      inConsole && console.error('OSentry: not init (captureMessage).');
+      if (inConsole) {
+        console.error('OSentry: not init (captureMessage).');
+      }
+
       return Ofn.setResponseKO('OSentry: not init (captureMessage).');
     }
 

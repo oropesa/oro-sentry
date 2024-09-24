@@ -3,14 +3,21 @@ import sentryTestkit from 'sentry-testkit';
 import waitForExpect from 'wait-for-expect';
 
 import { OSentry } from '../OSentry';
-import { OSENTRY_DEFAULT_CONFIG } from './_consts.mocks';
+import { OSENTRY_DEFAULT_CONFIG, defaultConsoleError, mockConsoleError } from './_consts.mocks';
 
 const { sentryTransport } = sentryTestkit();
 
 //
 
 describe('captureMessage', () => {
+  afterEach(() => {
+    console.error = defaultConsoleError;
+    mockConsoleError.mockReset();
+  });
+
   test('captureMessage no init', async () => {
+    console.error = mockConsoleError;
+
     const osentry = new OSentry({
       ...OSENTRY_DEFAULT_CONFIG,
       autoInit: false,
@@ -24,6 +31,26 @@ describe('captureMessage', () => {
     }
 
     expect(response.error.msg).toBe('OSentry: not init (captureMessage).');
+    expect(mockConsoleError).toHaveBeenCalledWith('OSentry: not init (captureMessage).');
+  });
+
+  test('captureMessage no init w/o console', async () => {
+    console.error = mockConsoleError;
+
+    const osentry = new OSentry({
+      ...OSENTRY_DEFAULT_CONFIG,
+      autoInit: false,
+    });
+
+    const response = osentry.captureMessage('message', {});
+
+    expect(response.status).toBe(false);
+    if (response.status) {
+      return;
+    }
+
+    expect(response.error.msg).toBe('OSentry: not init (captureMessage).');
+    expect(mockConsoleError).not.toHaveBeenCalled();
   });
 
   test('captureMessage details', async () => {
