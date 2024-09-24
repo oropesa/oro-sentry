@@ -4,14 +4,30 @@ import sentryTestkit from 'sentry-testkit';
 import waitForExpect from 'wait-for-expect';
 
 import { OSentry } from '../OSentry';
-import { OSENTRY_DEFAULT_CONFIG } from './_consts.mocks';
+import {
+  OSENTRY_DEFAULT_CONFIG,
+  defaultConsoleError,
+  defaultConsoleLog,
+  mockConsoleError,
+  mockConsoleLog,
+} from './_consts.mocks';
 
 const { sentryTransport } = sentryTestkit();
 
 //
 
 describe('sendResponse', () => {
+  afterEach(() => {
+    console.log = defaultConsoleLog;
+    console.error = defaultConsoleError;
+    mockConsoleLog.mockReset();
+    mockConsoleError.mockReset();
+  });
+
   test('sendResponse no init', async () => {
+    console.error = mockConsoleError;
+    console.log = mockConsoleLog;
+
     const osentry = new OSentry({
       ...OSENTRY_DEFAULT_CONFIG,
       autoInit: false,
@@ -21,7 +37,8 @@ describe('sendResponse', () => {
       },
     });
 
-    const response = osentry.sendResponse(Ofn.setResponseKO(''), true);
+    const simpleResponse = Ofn.setResponseKO('');
+    const response = osentry.sendResponse(simpleResponse, true);
 
     expect(response.status).toBe(false);
     if (response.status) {
@@ -29,6 +46,8 @@ describe('sendResponse', () => {
     }
 
     expect(response.error.msg).toBe('OSentry: not init (sendResponse).');
+    expect(mockConsoleError).toHaveBeenCalledWith('OSentry: not init (sendResponse).');
+    expect(mockConsoleLog).toHaveBeenCalledWith(simpleResponse);
   });
 
   test('sendResponse empty', async () => {
