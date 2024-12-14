@@ -92,7 +92,7 @@ describe('new OSentry()', () => {
 
     osentry.init({
       dsn: OSENTRY_DEFAULT_CONFIG.dsn,
-      normalizeDepth: NaN,
+      normalizeDepth: Number.NaN,
     });
 
     const options = osentry.getOptions();
