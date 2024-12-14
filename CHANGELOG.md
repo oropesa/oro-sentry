@@ -1,5 +1,33 @@
+## 2.1.2 / 2024-12-14
+
+- Improve `eslint.config.js`.
+- Remove _dev_ libs:
+  - `eslint-plugin-jest-formatting` (non-used).
+- Add _dev_ libs:
+  - `eslint-plugin-jest-dom` added `v5.5.0`.
+  - `eslint-plugin-prettier` added `v5.2.1`.
+- Update _dev_ libs:
+  - `@babel/core` from `v7.25.2` to `v7.26.0`.
+  - `@babel/preset-env` from `v7.25.4` to `v7.26.0`.
+  - `@babel/preset-typescript` from `v7.24.7` to `v7.26.0`.
+  - `@eslint/js` from `v9.11.1` to `v9.16.0`.
+  - `@trivago/prettier-plugin-sort-imports` from `v4.3.0` to `v5.2.0`.
+  - `@types/jest` from `v29.5.13` to `v29.5.14`.
+  - `eslint` from `v9.11.1` to `v9.16.0`.
+  - `eslint-plugin-jest` from `v28.8.3` to `v28.9.0`.
+  - `eslint-plugin-unicorn` from `v55.0.0` to `v56.0.1`.
+  - `globals` from `v15.9.0` to `v15.13.0`.
+  - `husky` from `v9.1.6` to `v9.1.7`.
+  - `nodemon` from `v3.1.7` to `v3.1.9`.
+  - `prettier` from `v3.3.3` to `v3.4.2`.
+  - `tsup` from `v8.3.0` to `v8.3.5`.
+  - `typescript` from `v5.5.4` to `v5.7.2`.
+  - `typescript-eslint` from `v8.7.0` to `v8.18.0`.
+
 ## 2.1.1 / 2024-09-24
+
 - Apply `prettier --write` in the whole project (with `endOfLine: 'lf'`).
+- Fix eslint `@typescript-eslint/no-unused-expressions` rule in code.
 - Update `eslint` _breakpoint version_ (v8 to v9).
 - Update typescript _target_ to `ES2020`.
 - Updated libs:
