@@ -225,10 +225,10 @@ export class OSentry {
       return Ofn.setResponseKO('OSentry: not init (captureMessage).');
     }
 
-    const id = Sentry.captureMessage(message, captureContext);
+    // NOTE: `Partial<ScopeContext>` is an option of `CaptureContext`, that is an option of `captureMessage` second-parameter
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const id = Sentry.captureMessage(message, captureContext as any);
 
     return Ofn.setResponseOK({ event: { id, message, captureContext } });
   }
 }
-
-export default OSentry;
