@@ -37,7 +37,7 @@ export class OSentry {
   public projectserver?: string;
 
   #dsn?: string;
-  #status: boolean;
+  #status: boolean = false;
   #environment: string;
   readonly #defaultOptions: OSentryConfigOptions;
   #sentryOptions?: OSentryConfigOptions;
@@ -52,8 +52,6 @@ export class OSentry {
     autoInit = true,
     options = {},
   }: OSentryConfig = {}) {
-    this.#status = false;
-
     this.#dsn = sentryDsn || dsn;
     if (!Ofn.isString(this.#dsn)) {
       this.#dsn = undefined;
