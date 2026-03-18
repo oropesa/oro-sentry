@@ -1,6 +1,7 @@
 import {
   DEFAULT_IGNORES,
-  setEslintLanguageOptionsBrowser,
+  setEslintLanguageOptionsProject,
+  setEslintLanguageOptionsRootAsNode,
   setEslintPluginJest,
   setEslintPluginJestDom,
   setEslintPluginPrettier,
@@ -8,11 +9,12 @@ import {
   setEslintPluginUnicorn,
 } from './eslint.config.utils.js';
 
-const allowList = ['dev', 'Dev', 'msg', 'args', 'utils', 'Params'];
+const allowList = ['dev', 'Dev', 'msg', 'args', 'Args', 'utils', 'Params'];
 
 export default [
   { ignores: DEFAULT_IGNORES },
-  setEslintLanguageOptionsBrowser(),
+  setEslintLanguageOptionsProject(),
+  setEslintLanguageOptionsRootAsNode(),
   setEslintPluginUnicorn({ allowList }),
   setEslintPluginJest(),
   setEslintPluginJestDom(),
